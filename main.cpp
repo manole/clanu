@@ -16,6 +16,7 @@ int main() {
         return -1;
     }
 
+
     int N = InputImage.width();
     double **A = new double*[N];
 
