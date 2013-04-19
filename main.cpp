@@ -33,30 +33,30 @@ int main() {
 
     cout<<"Taille de l'image:"<<N<<endl;
 
-    double **H = haar_matrix_transform(A,N);
+    haar_matrix_transform(A,N);
 
 
     for( i=0; i<N; i++) {
        for( j=0; j<N; j++){
-           if(H[i][j]*H[i][j]<15){
-               H[i][j] = 0;
+           if(A[i][j]*A[i][j]<1.5){
+               A[i][j] = 0;
            }
 
         }
     }
 
-    double **P = inverse_haar_matrix_transform(H,N);
+    inverse_haar_matrix_transform(A,N);
 
 
 
     for( i=0; i<N; i++) {
        for( j=0; j<N; j++){
-          OutputImage->setPixel(i,j, qRgb((int)P[i][j],(int)P[i][j],(int)P[i][j]));
+          OutputImage->setPixel(i,j, qRgb((int)A[i][j],(int)A[i][j],(int)A[i][j]));
         }
     }
 
-   OutputImage->save("/home/skynet/Documents/CPP/CLANU/lena_restab.bmp");
 
+    OutputImage->save("/home/skynet/Documents/CPP/CLANU/lena_restab.bmp");
 
     return 0;
 }

@@ -7,7 +7,7 @@ QT       += core gui
 SOURCES += main.cpp \
     haar.cpp
 
-TARGET = ImageConsole
+TARGET = haar
 
 HEADERS += \
     haar.h
