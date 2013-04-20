@@ -1,12 +1,20 @@
-#include<cmath>
-#include<algorithm>
-#include<iostream>
+#include "haar.h"
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+
 using namespace std;
 
 /**Cette methode realise la transformation de Haar d'un vecteur de taille N
 * on admet que que N=2^j;
 */
-void haar_vector_transform(double *vect, int N)
+
+DHT::DHT(){
+    //Initialization des vecteurs
+    A = H = P = NULL;
+}
+
+void DHT::haar_vector_transform(double *vect)
 {
     //{8,4,1,3 }
     double *y = new double[N];
@@ -28,7 +36,7 @@ void haar_vector_transform(double *vect, int N)
     delete [] y;
 }
 
-void inverse_haar_vector_transform(double *vect, int N){
+void DHT::inverse_haar_vector_transform(double *vect){
 
     /* y contient le resiltat de la transortmation inverse;
      * alors que vect est un vecteur temporaire*/
@@ -50,13 +58,13 @@ void inverse_haar_vector_transform(double *vect, int N){
      delete [] y;
 }
 
-void haar_matrix_transform(double **A, const int N){
+void DHT::haar_matrix_transform(double **A){
 
     double **B = new double*[N];
 
     /*Transformation sur les lignes*/
     for(int i = 0;i<N;i++) {
-        haar_vector_transform(A[i] ,N);
+        haar_vector_transform(A[i]);
     }
     /*Transformation sur les colones lignes*/
     for(int i = 0;i<N;i++) {
@@ -64,7 +72,7 @@ void haar_matrix_transform(double **A, const int N){
         for( int j = 0;j<N;j++){
             B[i][j] = A[j][i];
         }
-        haar_vector_transform(B[i] ,N);
+        haar_vector_transform(B[i]);
     }
 
     for(int i = 0;i<N;i++) {
@@ -75,7 +83,7 @@ void haar_matrix_transform(double **A, const int N){
     }
 }
 
-void inverse_haar_matrix_transform(double **A, int N){
+void DHT::inverse_haar_matrix_transform(double **A){
 
     double **B = new double*[N];
 
@@ -85,7 +93,7 @@ void inverse_haar_matrix_transform(double **A, int N){
         for( int j = 0;j<N;j++){
             B[i][j] = A[j][i];
         }
-       inverse_haar_vector_transform(B[i] ,N);
+       inverse_haar_vector_transform(B[i]);
     }
 
     for(int i = 0;i<N;i++) {
@@ -96,7 +104,99 @@ void inverse_haar_matrix_transform(double **A, int N){
 
    /* Transformation sur les lignes*/
     for(int i = 0;i<N;i++) {
-        inverse_haar_vector_transform(A[i] ,N);
+        inverse_haar_vector_transform(A[i]);
         delete [] B[i];
     }
 }
+
+bool DHT::saveCompressedImage(QString path){
+
+    getCompressedImage()->save(path);
+    return true;
+}
+
+bool DHT::computeDHT(){
+    if (A == NULL) return false;
+
+    H = new double*[N];
+
+    for(int i=0;i<N;i++){
+        H[i] = new double[N];
+        copy(A[i],A[i]+N,H[i]);
+    }
+
+    haar_matrix_transform(H);
+    return true;
+}
+
+bool DHT::computeIDHT(int s){
+
+    if (H == NULL) return false;
+
+    P = new double*[N];
+
+    for( int i=0;i<N;i++){
+        P[i] = new double[N];
+        copy(H[i],H[i]+N,P[i]);
+    }
+
+    for( int i=0;i<N;i++){
+        for(int j=0;j<N;j++){
+            if(P[i][j]*P[i][j]<s/5) P[i][j]=0;
+        }
+    }
+
+    inverse_haar_matrix_transform(P);
+
+
+    return true;
+
+}
+
+bool DHT::setImage(QImage InputImage){
+
+    if(InputImage.isNull()) return false;
+
+    int taille = 0;
+
+    if (InputImage.width() <= InputImage.width()) {
+        taille = InputImage.width();
+    } else taille = InputImage.height();
+
+    //verification si puissance de 2;
+    if( taille & (taille - 1) && taille!=0) {
+        this->N = taille;
+    } else {
+        int tmp = 1;
+        while(tmp<taille) tmp<<=1;
+        this->N = tmp;
+    }
+
+    if (A == NULL){
+        A = new double*[N];
+    }
+
+    for( int i=0; i<N; i++) {
+       A[i] = new double[N];
+       for( int j=0; j<N; j++){
+            A[i][j] =  qGray(InputImage.pixel(i,j));
+        }
+    }
+
+    return true;
+}
+
+QImage* DHT::getCompressedImage(){
+
+    QImage *OutputImage = new QImage(N, N, QImage::Format_RGB888);
+
+    if (P == NULL) return OutputImage;
+
+    for(int i=0; i<N; i++) {
+       for(int j=0; j<N; j++){
+          OutputImage->setPixel(i,j, qRgb((int)P[i][j],(int)P[i][j],(int)P[i][j]));
+        }
+    }
+    return OutputImage;
+}
+
