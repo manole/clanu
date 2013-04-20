@@ -142,7 +142,7 @@ bool DHT::computeIDHT(int s){
 
     for( int i=0;i<N;i++){
         for(int j=0;j<N;j++){
-            if(P[i][j]*P[i][j]<s/5) P[i][j]=0;
+
         }
     }
 

@@ -18,7 +18,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionOpenImage_triggered()
 {
-    QStringList file = QFileDialog::getOpenFileNames(this, tr("Choisissez une image"),"./",tr("Images (*.bmp)"));
+    QStringList file =
+            QFileDialog::getOpenFileNames(this, tr("Choisissez une image"),"./",tr("Images (*.bmp *.png *.jpg .*jpeg)"));
 
     if(file.isEmpty()) return;
 
