@@ -8,6 +8,7 @@ using namespace std;
 */
 void haar_vector_transform(double *vect, int N)
 {
+    //{8,4,1,3 }
     double *y = new double[N];
     int taille = N;
     /*on calcule la moyenne et 2 terms consecutifs, donc N/2 terms, apres reaplique l'ogorithm sur ces N/2 terms

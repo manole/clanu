@@ -16,12 +16,10 @@ int main() {
         return -1;
     }
 
-
     int N = InputImage.width();
     double **A = new double*[N];
 
     QImage *OutputImage = new QImage(N, N, QImage::Format_RGB888);
-
 
     int i,j;
     for( i=0; i<N; i++) {
@@ -38,7 +36,7 @@ int main() {
 
     for( i=0; i<N; i++) {
        for( j=0; j<N; j++){
-           if(A[i][j]*A[i][j]<1.5){
+           if(A[i][j]*A[i][j]<5){
                A[i][j] = 0;
            }
 
@@ -47,14 +45,11 @@ int main() {
 
     inverse_haar_matrix_transform(A,N);
 
-
-
     for( i=0; i<N; i++) {
        for( j=0; j<N; j++){
           OutputImage->setPixel(i,j, qRgb((int)A[i][j],(int)A[i][j],(int)A[i][j]));
         }
     }
-
 
     OutputImage->save("/home/skynet/Documents/CPP/CLANU/lena_restab.bmp");
 
