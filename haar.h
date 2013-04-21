@@ -8,14 +8,13 @@ private:
     /***************************************************************************************/
     int N;           // le taille de l'image
 
-    double tau;
+    double taux;
 
     double **A;      // Matrice qui contient l'image originale;
 
     double **H;      // Matrice qui contient la tranormée de Haar de l'image A;
 
     double **P;      // Matrice qui contient la l'image compressé;
-
 
     /*****************************************************************************************/
 
@@ -29,6 +28,7 @@ private:
 
     void inverse_haar_matrix_transform(double **M);
 
+    double getMaxVal();
 
 public:
     DHT();
@@ -40,6 +40,8 @@ public:
     bool computeIDHT(int s);
 
     bool saveCompressedImage(QString path);
+
+    double getTaux();
 
     QImage* getCompressedImage();
 };

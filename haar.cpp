@@ -129,7 +129,7 @@ bool DHT::computeDHT(){
     return true;
 }
 
-bool DHT::computeIDHT(int s){
+bool DHT::computeIDHT(int seuil){
 
     if (H == NULL) return false;
 
@@ -142,7 +142,7 @@ bool DHT::computeIDHT(int s){
 
     for( int i=0;i<N;i++){
         for(int j=0;j<N;j++){
-
+            /**/;
         }
     }
 
@@ -198,5 +198,21 @@ QImage* DHT::getCompressedImage(){
         }
     }
     return OutputImage;
+}
+
+double DHT::getMaxVal(){
+    double max=0;
+
+    for(int i = 0;i<N;i++) {
+        for( int j = 0;j<N;j++){
+            if ((abs(A[i][j])>max)&&((i!=0)or(j!=0))) max=abs(A[i][j]);
+        }
+    }
+    return max;
+    }
+
+
+double DHT::getTaux(){
+    return taux;
 }
 
